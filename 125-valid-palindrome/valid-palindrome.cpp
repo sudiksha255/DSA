@@ -1,26 +1,23 @@
 class Solution {
 public:
     bool isPalindrome(string s) {
-        string res="";
-        for(char ch:s){
-            if(ch>='A'&&ch<='Z'){
-                res.push_back(ch-'A'+'a');
+        int l=0, r=s.length()-1;
+        while(l<r){
+            while(l<r&&!alphaNum(s[l])){
+                l++;
             }
-            else if(ch>='0'&&ch<='9'||ch>='a'&&ch<='z'){
-                res.push_back(ch);
+            while(r>l&&!alphaNum(s[r])){
+                r--;
             }
-            else{
-                continue;
-            } 
-        }
-        int start=0,end=res.size()-1;
-        while(start<end){
-        if(res[start]==res[end]){
-            start++;
-            end--;
-        }
-        else return false;
+            if(tolower(s[l])!=tolower(s[r])){
+                return false;
+            }
+            l++;
+            r--;
         }
         return true;
+    }
+    bool alphaNum(char ch){
+        return (ch>='A'&&ch<='Z'||ch>='a'&&ch<='z'||ch>='0'&&ch<='9');
     }
 };
