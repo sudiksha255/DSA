@@ -1,40 +1,30 @@
 class Solution {
 public:
-//for storing prerequisites
-unordered_map<int,vector<int>> prerequisiteMap;
-//for detecting a cycle
-unordered_set<int> visited;
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        //creates a node for every couse even if it does not have a prerequisite
+        vector<int> indegree(numCourses,0);
+        vector<vector<int>> adjList(numCourses);
+        for(auto & pre:prerequisites){
+            indegree[pre[0]]++;
+            adjList[pre[1]].push_back(pre[0]);
+        }
+        queue<int> q;
         for(int i=0;i<numCourses;i++){
-            prerequisiteMap[i]={};
+          if(indegree[i]==0){
+            q.push(i);
+          }
         }
-        //adds the prerequisites
-        for(const auto& prereq:prerequisites){
-           prerequisiteMap[prereq[0]].push_back(prereq[1]);
+        int finish=0;
+        while(!q.empty()){
+            int node=q.front();
+            q.pop();
+            finish++;
+        for(int nei:adjList[node]){
+            indegree[nei]--;
+            if(indegree[nei]==0){
+                q.push(nei);
+            }        
         }
-        // run dfs on each couse
-        for(int c=0;c<numCourses;c++){
-        //if cycle found return false
-            if(!dfs(c)) return false;
-        }
-        return true;
     }
-    bool dfs(int course){
-        //if exist in visited => cycle detected return false
-        if(visited.count(course)) return false;
-        //if does not exist in map => already processed or empty return true
-        if(prerequisiteMap[course].empty()) return true;
-        //add course to visted
-        visited.insert(course);
-        for(int prereq:prerequisiteMap[course]){
-          if(!dfs(prereq)) return false;
-        }
-        //remove couse from visited => checked its prerequisite
-        visited.erase(course);
-        //remove prereq from the map and mark it as clear
-        prerequisiteMap[course].clear();
-
-        return true;
+    return finish==numCourses;
     }
 };
