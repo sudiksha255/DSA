@@ -1,24 +1,26 @@
 class Solution {
 public:
-    vector<vector<int>> memo;
     bool canPartition(vector<int>& nums) {
         int sum=0;
         for(int n:nums){
             sum+=n;
         }
         if(sum%2!=0) return false;
-        memo.resize(nums.size(),vector<int>(sum/2+1,-1));
-        return dfs(nums,0,sum/2);
+        unordered_set<int> dp;
+        dp.insert(0);
+        int target=sum/2;
+        
+    for(int i=nums.size()-1;i>0;i--){
+       unordered_set<int> nextDp; 
+       for(int t:dp){
+        if(t+nums[i]==target){
+            return true;
+        }
+        nextDp.insert(t+nums[i]);
+        nextDp.insert(t);
+       }
+       dp=nextDp;
     }
-    bool dfs(vector<int>&nums,int i,int target){
-        if(i==nums.size()){
-            return target==0;
-        }
-        if(target<0){
-            return false;
-        }
-        if(memo[i][target]!=-1) return memo[i][target];
-        memo[i][target]= dfs(nums,i+1,target)||dfs(nums,i+1,target-nums[i]);
-        return memo[i][target];
+    return false;
     }
 };
