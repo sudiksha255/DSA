@@ -21,8 +21,8 @@ public:
     //Reversing the second half of the linked list obtained:
         ListNode * second=slow->next;
         ListNode* prev=nullptr;
+        slow->next=nullptr;
         while(second!=nullptr){
-          slow->next=nullptr;
           ListNode* temp=second->next;
           second->next=prev;
           prev=second;
