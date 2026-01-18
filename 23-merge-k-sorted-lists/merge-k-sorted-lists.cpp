@@ -10,27 +10,34 @@
  */
 class Solution {
 public:
-    ListNode* mergeTwoLists(ListNode*a,ListNode*b){
-        if(!a) return b;
-        if(!b) return a;
-        if(a->val<b->val){
-            a->next=mergeTwoLists(a->next,b);
-            return a;
+    ListNode* mergeTwoLists(ListNode* a, ListNode*b){
+        ListNode dummy(0);
+        ListNode* tail =&dummy;
+        while(a&&b){
+            if(a->val<b->val){
+                tail->next=a;
+                a=a->next;
+            }
+            else{
+                tail->next=b;
+                b=b->next;
+            }
+            tail=tail->next;
         }
-        else{
-            b->next=mergeTwoLists(a,b->next);
-            return b;
-        }
-    }
-    ListNode* mergeList(vector<ListNode*>&lists,int left,int right){
-        if(left==right) return lists[left];
-        int mid=left+(right-left)/2;
-        ListNode* l1=mergeList(lists,left,mid);
-        ListNode* l2=mergeList(lists,mid+1,right);
-        return mergeTwoLists(l1,l2);
+        tail->next=a?a:b;
+        return dummy.next;
     }
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         if(lists.empty()) return nullptr;
-        return mergeList(lists,0,lists.size()-1);
+        while(lists.size()>1){
+            vector<ListNode*> merged;
+            for(int i=0;i<lists.size();i+=2){
+                ListNode* l1=lists[i];
+                ListNode* l2=(i+1<lists.size())?lists[i+1]:nullptr;
+                merged.push_back(mergeTwoLists(l1,l2));
+            }
+            lists=merged;
+        }
+        return lists[0];
     }
 };
