@@ -10,35 +10,27 @@
  */
 class Solution {
 public:
-//min heap custom comparator
-    struct Compare{
-        bool operator()(ListNode* a,ListNode* b){
-        return a->val>b->val;
+    ListNode* mergeTwoLists(ListNode*a,ListNode*b){
+        if(!a) return b;
+        if(!b) return a;
+        if(a->val<b->val){
+            a->next=mergeTwoLists(a->next,b);
+            return a;
         }
-    };
+        else{
+            b->next=mergeTwoLists(a,b->next);
+            return b;
+        }
+    }
+    ListNode* mergeList(vector<ListNode*>&lists,int left,int right){
+        if(left==right) return lists[left];
+        int mid=left+(right-left)/2;
+        ListNode* l1=mergeList(lists,left,mid);
+        ListNode* l2=mergeList(lists,mid+1,right);
+        return mergeTwoLists(l1,l2);
+    }
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-//creating a priority queue- min heap 
-    priority_queue<ListNode*,vector<ListNode*>,Compare> pq;
-//pushing the initial nodes
-    for(auto list:lists){
-        if(list!=nullptr){
-            pq.push(list);
-        }
-    }
-    ListNode dummy(0);
-    ListNode* tail=&dummy;
-
-    while(!pq.empty()){
-        ListNode* node=pq.top();
-        pq.pop();
-
-        tail->next=node;
-        tail=tail->next;
-
-        if(node->next!=nullptr){
-            pq.push(node->next);
-        }
-    }
-    return dummy.next;
+        if(lists.empty()) return nullptr;
+        return mergeList(lists,0,lists.size()-1);
     }
 };
