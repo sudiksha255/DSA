@@ -1,36 +1,37 @@
 class Solution {
 public:
     string minWindow(string s, string t) {
-        if((s.length()<t.length())||(t.empty())) return "";
+        if(t.empty()||s.length()<t.length()) return "";
 
-        unordered_map<char,int> required, window;
+        unordered_map<char,int> requiredCharT,currWindowS;
         for(char ch:t){
-            required[ch]++;
+            requiredCharT[ch]++;
         }
-        int totalReqChar=required.size();
-        int matchedChar=0;
-        int left=0,right=0;
+        int left=0,newIndex=0,windowSize=INT_MAX;
+        int haveChar=0,needChar=requiredCharT.size();
+        for(int right=0;right<s.size();right++){
+            char ch=s[right];
+            currWindowS[ch]++;
 
-        int windowSize=INT_MAX;
-        int startIndex=0;
-        while(right<s.size()){
-            window[s[right]]++;
-            if(required.count(s[right])&&window[s[right]]==required[s[right]]){               matchedChar++;
+            if(requiredCharT.count(ch)&&currWindowS[ch]==requiredCharT[ch]){
+               haveChar++;
             }
-            while(matchedChar==totalReqChar){
+            while(haveChar==needChar){
+                char ch=s[left];
+                
                 if(right-left+1<windowSize){
                     windowSize=right-left+1;
-                    startIndex=left;
+                    newIndex=left;
                 }
-                window[s[left]]--;
-                if(required.count(s[left])&&window[s[left]]<required[s[left]]){
-                    matchedChar--;
+                currWindowS[ch]--;
+                if(requiredCharT.count(ch)&& currWindowS[ch]<requiredCharT[ch]){
+                    haveChar--;
                 }
                 left++;
             }
-            right++;
         }
-       return windowSize == INT_MAX ? "" : s.substr(startIndex, windowSize);
+            return windowSize==INT_MAX?"":s.substr(newIndex,windowSize);
+        
 
     }
 };
