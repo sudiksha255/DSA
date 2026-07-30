@@ -1,23 +1,20 @@
 class Solution {
 public:
 int rows,cols;
-    void dfs(int r,int c, vector<vector<int>>&heights,vector<vector<bool>>&visited){
-        visited[r][c]=true;
-        vector<pair<int,int>>directions={
-            {1,0},{-1,0},{0,1},{0,-1}
-        };
-
-        for(auto[dr,dc]:directions){
-            int nr=r+dr;
-            int nc=c+dc;
-            if(nr<0||nr>=rows||nc<0||nc>=cols||visited[nr][nc]){
-                continue;
-            }
-            if(heights[nr][nc]>=heights[r][c]){
-                dfs(nr,nc,heights,visited);
-            }
-        }
+vector<pair<int,int>>directions={
+    {1,0},{-1,0},{0,1},{0,-1}
+};
+void dfs(int r,int c,vector<vector<int>>&height,vector<vector<bool>>&visited){
+    visited[r][c]=true;
+    for(auto[dr,dc]:directions){
+      int nr=r+dr;
+      int nc=c+dc;
+    if(nr<0||nc<0||nr>=rows||nc>=cols||visited[nr][nc]) continue;
+    if(height[nr][nc]>=height[r][c]) dfs(nr,nc,height,visited);
     }
+   
+
+}
 
 
     vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
